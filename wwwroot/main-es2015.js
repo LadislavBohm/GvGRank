@@ -372,8 +372,7 @@ let VoteComponent = class VoteComponent {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             })
-        })
-            .subscribe((response) => console.log(response));
+        });
     }
 };
 VoteComponent.ctorParameters = () => [

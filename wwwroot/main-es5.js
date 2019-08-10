@@ -385,8 +385,7 @@ var VoteComponent = /** @class */ (function () {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             })
-        })
-            .subscribe(function (response) { return console.log(response); });
+        });
     };
     VoteComponent.ctorParameters = function () { return [
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] }
