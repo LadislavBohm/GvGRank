@@ -24,7 +24,7 @@ namespace GvGRank_Server
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            string connectionString = Configuration.GetConnectionString("VoteDB");
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<VoteDbContext>(o => o.UseSqlServer(connectionString));
 

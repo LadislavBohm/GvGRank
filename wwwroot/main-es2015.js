@@ -164,7 +164,7 @@ let LeaderboardComponent = class LeaderboardComponent {
      */
     constructor(http) {
         this.http = http;
-        this.api = "https://localhost:44329/api/leaderboard";
+        this.api = "https://gvgrank.azurewebsites.net/api/leaderboard";
         //setInterval(() => this.getLeaderboard(), 60000);
     }
     ngOnInit() {
@@ -229,13 +229,14 @@ __webpack_require__.r(__webpack_exports__);
 let RecentComponent = class RecentComponent {
     constructor(http) {
         this.http = http;
-        this.apiRecent = "https://localhost:44329/api/recentvotes";
+        this.apiRecent = "https://gvgrank.azurewebsites.net/api/recentvotes";
+        this.signalrConn = "https://gvgrank.azurewebsites.net/recentvote";
         this.count = 14; // Number of entries to display, dictated by card size
         this.filteringResults = false;
         // SIGNALR
         this.startConnection = () => {
             this.hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_3__["HubConnectionBuilder"]()
-                .withUrl('https://localhost:44329/recentvote', {
+                .withUrl(this.signalrConn, {
                 skipNegotiation: true,
                 transport: _aspnet_signalr__WEBPACK_IMPORTED_MODULE_3__["HttpTransportType"].WebSockets // ^
             } // ^
@@ -318,8 +319,8 @@ __webpack_require__.r(__webpack_exports__);
 let VoteComponent = class VoteComponent {
     constructor(http) {
         this.http = http;
-        this.apiVote = "https://localhost:44329/api/vote";
-        this.apiVCount = "https://localhost:44329/api/voteCount";
+        this.apiVote = "https://gvgrank.azurewebsites.net/api/vote";
+        this.apiVCount = "https://gvgrank.azurewebsites.net/api/voteCount";
         this.player1Name = 'Loading...';
         this.player2Name = 'Loading...';
         this.voteCount = -1; // Value of -1 will hide the element

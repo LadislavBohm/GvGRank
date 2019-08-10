@@ -169,7 +169,7 @@ var LeaderboardComponent = /** @class */ (function () {
      */
     function LeaderboardComponent(http) {
         this.http = http;
-        this.api = "https://localhost:44329/api/leaderboard";
+        this.api = "https://gvgrank.azurewebsites.net/api/leaderboard";
         //setInterval(() => this.getLeaderboard(), 60000);
     }
     LeaderboardComponent.prototype.ngOnInit = function () {
@@ -238,13 +238,14 @@ var RecentComponent = /** @class */ (function () {
     function RecentComponent(http) {
         var _this = this;
         this.http = http;
-        this.apiRecent = "https://localhost:44329/api/recentvotes";
+        this.apiRecent = "https://gvgrank.azurewebsites.net/api/recentvotes";
+        this.signalrConn = "https://gvgrank.azurewebsites.net/recentvote";
         this.count = 14; // Number of entries to display, dictated by card size
         this.filteringResults = false;
         // SIGNALR
         this.startConnection = function () {
             _this.hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_3__["HubConnectionBuilder"]()
-                .withUrl('https://localhost:44329/recentvote', {
+                .withUrl(_this.signalrConn, {
                 skipNegotiation: true,
                 transport: _aspnet_signalr__WEBPACK_IMPORTED_MODULE_3__["HttpTransportType"].WebSockets // ^
             } // ^
@@ -329,8 +330,8 @@ __webpack_require__.r(__webpack_exports__);
 var VoteComponent = /** @class */ (function () {
     function VoteComponent(http) {
         this.http = http;
-        this.apiVote = "https://localhost:44329/api/vote";
-        this.apiVCount = "https://localhost:44329/api/voteCount";
+        this.apiVote = "https://gvgrank.azurewebsites.net/api/vote";
+        this.apiVCount = "https://gvgrank.azurewebsites.net/api/voteCount";
         this.player1Name = 'Loading...';
         this.player2Name = 'Loading...';
         this.voteCount = -1; // Value of -1 will hide the element
