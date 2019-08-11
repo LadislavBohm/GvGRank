@@ -52,7 +52,7 @@ module.exports = "<div class=\"input-group\">\r\n  <input type=\"text\" [(ngMode
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"input-group\">\r\n  <input type=\"text\" [(ngModel)]='playerFilter' class=\"form-control\" placeholder=\"Filter by name...\" aria-label=\"Player's name\" aria-describedby=\"basic-addon2\">\r\n  <div class=\"input-group-append\">\r\n    <button class=\"btn btn-secondary\" type=\"button\" (click)='search()'>Search</button>\r\n    <button class=\"btn btn-secondary\" type=\"button\" (click)='reset()'>Reset</button>\r\n  </div>\r\n</div>\r\n\r\n<br />\r\n\r\n<p *ngFor=\"let vote of (filteringResults) ? filteredRecentVotes : recentVotes\">\r\n  {{vote[0]}} > {{vote[1]}}\r\n</p>\r\n\r\n"
+module.exports = "<div class=\"input-group\">\r\n  <input type=\"text\" [(ngModel)]='playerFilter' (keyup.enter)='search()' class=\"form-control\" placeholder=\"Filter by name...\" aria-label=\"Player's name\" aria-describedby=\"basic-addon2\">\r\n  <div class=\"input-group-append\">\r\n    <button class=\"btn btn-secondary\" type=\"button\" (click)='search()'>Search</button>\r\n    <button class=\"btn btn-secondary\" type=\"button\" (click)='reset()'>Reset</button>\r\n  </div>\r\n</div>\r\n\r\n<br />\r\n\r\n<p *ngFor=\"let vote of (filteringResults) ? filteredRecentVotes : recentVotes\">\r\n  {{vote[0]}} > {{vote[1]}}\r\n</p>\r\n\r\n"
 
 /***/ }),
 
@@ -269,8 +269,10 @@ var RecentComponent = /** @class */ (function () {
     };
     // UTILITY
     RecentComponent.prototype.update = function (vote) {
+        if (this.recentVotes.length == 14) {
+            this.recentVotes.pop();
+        }
         this.recentVotes.unshift(vote);
-        this.recentVotes.pop();
     };
     RecentComponent.prototype.search = function () {
         if (this.playerFilter) {
@@ -351,8 +353,8 @@ var VoteComponent = /** @class */ (function () {
     };
     VoteComponent.prototype.vote = function (winId, loseId) {
         this.postVote({ WinId: winId, LoseId: loseId });
-        this.player1Name = '...';
-        this.player2Name = '...';
+        this.player1Name = ' Loading...';
+        this.player2Name = ' Loading...';
         this.player1Id = 0;
         this.player2Id = 0;
         this.getVoteCount();
@@ -387,7 +389,7 @@ var VoteComponent = /** @class */ (function () {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             })
-        });
+        }).subscribe();
     };
     VoteComponent.ctorParameters = function () { return [
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] }
