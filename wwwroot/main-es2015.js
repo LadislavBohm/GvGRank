@@ -277,6 +277,7 @@ let RecentComponent = class RecentComponent {
     }
     // API
     getRecentVotes() {
+        this.filteredRecentVotes = [];
         var apiString = this.apiRecent + '?count=' + this.count;
         if (this.filteringResults)
             apiString += '&player=' + this.playerFilter;
@@ -327,6 +328,8 @@ let VoteComponent = class VoteComponent {
         //private apiVCount: string = "https://localhost:44329/api/voteCount";
         this.player1Name = 'Loading...';
         this.player2Name = 'Loading...';
+        this.player1Id = 0;
+        this.player2Id = 0;
         this.voteCount = -1; // Value of -1 will hide the element
     }
     ngOnInit() {
@@ -342,10 +345,6 @@ let VoteComponent = class VoteComponent {
     }
     vote(winId, loseId) {
         this.postVote({ WinId: winId, LoseId: loseId });
-        this.player1Name = ' Loading...';
-        this.player2Name = ' Loading...';
-        this.player1Id = 0;
-        this.player2Id = 0;
         this.getVoteCount();
         this.getVote();
     }
@@ -357,6 +356,10 @@ let VoteComponent = class VoteComponent {
         });
     }
     getVote() {
+        this.player1Name = ' Loading...';
+        this.player2Name = ' Loading...';
+        this.player1Id = 0;
+        this.player2Id = 0;
         this.http.get(this.apiVote).subscribe(response => {
             this.player1Name = response.name1;
             this.player2Name = response.name2;

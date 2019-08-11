@@ -287,6 +287,7 @@ var RecentComponent = /** @class */ (function () {
     // API
     RecentComponent.prototype.getRecentVotes = function () {
         var _this = this;
+        this.filteredRecentVotes = [];
         var apiString = this.apiRecent + '?count=' + this.count;
         if (this.filteringResults)
             apiString += '&player=' + this.playerFilter;
@@ -338,6 +339,8 @@ var VoteComponent = /** @class */ (function () {
         //private apiVCount: string = "https://localhost:44329/api/voteCount";
         this.player1Name = 'Loading...';
         this.player2Name = 'Loading...';
+        this.player1Id = 0;
+        this.player2Id = 0;
         this.voteCount = -1; // Value of -1 will hide the element
     }
     VoteComponent.prototype.ngOnInit = function () {
@@ -353,10 +356,6 @@ var VoteComponent = /** @class */ (function () {
     };
     VoteComponent.prototype.vote = function (winId, loseId) {
         this.postVote({ WinId: winId, LoseId: loseId });
-        this.player1Name = ' Loading...';
-        this.player2Name = ' Loading...';
-        this.player1Id = 0;
-        this.player2Id = 0;
         this.getVoteCount();
         this.getVote();
     };
@@ -370,6 +369,10 @@ var VoteComponent = /** @class */ (function () {
     };
     VoteComponent.prototype.getVote = function () {
         var _this = this;
+        this.player1Name = ' Loading...';
+        this.player2Name = ' Loading...';
+        this.player1Id = 0;
+        this.player2Id = 0;
         this.http.get(this.apiVote).subscribe(function (response) {
             _this.player1Name = response.name1;
             _this.player2Name = response.name2;
