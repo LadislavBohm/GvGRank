@@ -13,8 +13,7 @@ namespace GvGRank_Server.Controllers
     {
         private VoteDbContext _context;
         private IHubContext<VoteHub> _hub;
-
-        private const bool hashIp = true;
+        private static Random _random = new Random();
 
 		public VoteController(VoteDbContext context, IHubContext<VoteHub> hub)
         {
@@ -33,13 +32,13 @@ namespace GvGRank_Server.Controllers
 
 				// List of votes the user has already made
 
-				IQueryable<Tuple<int, int>> clientExistingVotes =
+                IQueryable<Tuple<int, int>> clientExistingVotes =
 					_context.Votes
 					.Where(x => x.IpId == ipId)
-					.Select(x => Tuple.Create(x.WinId, x.LoseId));
+					.Select(x => Tuple.Create(Math.Min(x.WinId, x.LoseId), Math.Max(x.WinId, x.LoseId)));
 
 
-				// List of votes the client can make 
+				// List of votes the user can make 
 
 				IQueryable<Tuple<int, int>> validVotes = from set1 in _context.Players.Select(x => x.Id)
 														 from set2 in _context.Players.Select(x => x.Id)
@@ -54,7 +53,7 @@ namespace GvGRank_Server.Controllers
 
 				// Return randomly from what remains
 
-				int    randomIndex = new Random().Next(validVotes.Count()) - 1;
+				int    randomIndex = _random.Next(validVotes.Count()) - 1;
 				int    player1Id   = validVotes.Skip(randomIndex).FirstOrDefault().Item1;
 				int    player2Id   = validVotes.Skip(randomIndex).FirstOrDefault().Item2;
 				string player1Name = _context.Players.Where(x => x.Id == player1Id).SingleOrDefault().Name;
@@ -154,8 +153,8 @@ namespace GvGRank_Server.Controllers
 			int change = Convert.ToInt32((oldWinRating >= oldLoseRating) ? Math.Max(CalcRatingChange(EXPECTED_SCALING),   MIN_CHANGE)   // Expected result
 																		 : Math.Min(CalcRatingChange(UNEXPECTED_SCALING), MAX_CHANGE)); // Unexpected result
 
-			playerWin.Shitlo = oldWinRating + change;
-			playerLose.Shitlo  = oldLoseRating  - change;
+			playerWin.Shitlo   = oldWinRating  + change;
+			playerLose.Shitlo  = oldLoseRating - change;
 
 
 			// Save vote to database
@@ -188,10 +187,7 @@ namespace GvGRank_Server.Controllers
 		{
 			string ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 			
-			if (hashIp) // To not have to change code during the beta, when testing with a variety of real IP addresses
-			{
-				ip = GetStringSha256Hash(ip);
-			}
+			ip = GetStringSha256Hash(ip);
 
 			int id = 0;
 

@@ -19,8 +19,11 @@ namespace GvGRank_Server.Controllers
 		[HttpGet]
 		public string[] Get()
 		{
+            const int minVotesToShow = 10;
+
 			return _context.Players
 				.OrderByDescending(x => x.Shitlo)
+                .Where(x => x.Wins + x.Losses >= minVotesToShow)
 				.Select(x => x.Name /*+ " - " + x.Shitlo.ToString()*/)
 				.ToArray();
 		}

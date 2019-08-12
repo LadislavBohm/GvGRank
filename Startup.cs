@@ -34,8 +34,8 @@ namespace GvGRank_Server
                     builder =>
                     {
                         builder
-                            .WithOrigins("http://localhost:4200")
-                            //.AllowAnyOrigin()
+                            //.WithOrigins("https://gvgrank.azurewebsites.net/")
+                            .AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials()

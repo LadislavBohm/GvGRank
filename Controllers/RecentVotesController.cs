@@ -21,7 +21,14 @@ namespace GvGRank_Server.Controllers
 		public string[][] Get(int count = 1, string player = "")
 		{
 			if (count < 1)
-				return new string[][] { };
+            {
+                return new string[][] { };
+            }
+
+            if (count > 100)
+            {
+                count = 100;
+            }
 
 			// Code gore - since it's a query with a conditional clause, it needs to be written with lambda syntax. Very messy with a double same-table join.
 			var result = _context.Votes
