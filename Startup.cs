@@ -7,11 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 using GvGRank_Server.Models;
 using GvGRank_Server.Hubs;
 using System;
+using System.Threading;
+
+using Microsoft.Extensions.Logging;
 
 namespace GvGRank_Server
 {
     public class Startup
     {
+        private Timer _decrementingTimer;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -47,8 +52,11 @@ namespace GvGRank_Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime appLifetime)
         {
+            appLifetime.ApplicationStarted.Register(() => StartDecrementingTimer(app.ApplicationServices));
+            appLifetime.ApplicationStopping.Register(StopDecrementingTimer);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -69,6 +77,35 @@ namespace GvGRank_Server
             app.UseSignalR(options => options.MapHub<VoteHub>("/recentvote"));
 
             app.UseMvc();
+        }
+
+        private void StartDecrementingTimer(IServiceProvider provider)
+        {
+            _decrementingTimer = new Timer(
+                state =>
+                    {
+                        using (var scope = provider.CreateScope())
+                        {
+                            var context = scope.ServiceProvider.GetService<VoteDbContext>();
+
+                            // decrement it somehow
+                            context.SaveChanges();
+                        }
+                    },
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromMinutes(1)); //this sets the period to 1 minute
+        }
+
+        private void StopDecrementingTimer()
+        {
+            if (_decrementingTimer != null)
+            {
+                //stop timer so it doesn't call callback again and dispose it
+                _decrementingTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                _decrementingTimer.Dispose();
+                _decrementingTimer = null;
+            }
         }
     }
 }
